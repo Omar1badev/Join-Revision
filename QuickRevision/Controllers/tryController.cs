@@ -97,6 +97,16 @@ public class tryController(AppDbContext context) : ControllerBase
 
         return Ok(data);
     }
+    [HttpGet("Eager/{Laudding}/asSplitQuery")]
+    public IActionResult GetEagerSplit()
+    {
+        var data = context.Departments
+            .Include(x => x.Students.Where(i => i.Id > 50))
+            .AsSplitQuery()
+            .ToList();
+
+        return Ok(data);
+    }
 
     [HttpGet("Explicit/{Laudding}")]
     public IActionResult GetExplicite()
