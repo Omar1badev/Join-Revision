@@ -1,0 +1,6 @@
+@QuickRevision_HostAddress = http://localhost:5030
+
+GET {{QuickRevision_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
