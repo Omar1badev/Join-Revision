@@ -13,7 +13,7 @@ public class tryController(AppDbContext context) : ControllerBase
 
 
 
-    [HttpGet("Right/{Join}")]
+    [HttpGet("Inner/{Join}")]
     public IActionResult Get()
     {
         var data = context.Students.Join(
@@ -45,6 +45,54 @@ public class tryController(AppDbContext context) : ControllerBase
 
         return Ok(data);
     }
+
+
+
+
+
+    [HttpGet("inner/{Join}/WithLinq")]
+    public IActionResult Getinner()
+    {
+        var data = (from student in context.Students
+                   join dep in context.Dep on student.Id equals dep.StudentId
+                   join Department in context.Departments on student.DepartmentId equals Department.Id
+                   select new
+                   {
+                       StudentId = student.Id,
+                       StudentName = student.Name,
+                       DepName = dep.Name,
+                       DepartmentName = Department.Name
+                   }).ToList();
+        return Ok(data);
+    }
+
+
+
+
+
+    [HttpGet("left/{Join}/WithLinq")]
+    public IActionResult Getleftwithlinq()
+    {
+        var data = (from student in context.Students
+                    join dep in context.Dep 
+                    on student.Id equals dep.StudentId
+                    join Departmen in context.Departments 
+                    on student.DepartmentId equals Departmen.Id into temp
+                    from an in temp.DefaultIfEmpty()
+                    select new
+                    {
+                        StudentId = student.Id,
+                        StudentName = student.Name,
+                        DepName = dep.Name,
+                        DepartmentName = temp.FirstOrDefault()!.Name
+                    }).ToList();
+        return Ok(data);
+    }
+
+
+
+
+
 
     [HttpGet("Left/{Join}")]
     public IActionResult Getall()
@@ -86,6 +134,9 @@ public class tryController(AppDbContext context) : ControllerBase
     }
 
 
+
+
+
     [HttpGet("Eager/{Laudding}")]
     public IActionResult GetEager()
     {
@@ -97,6 +148,10 @@ public class tryController(AppDbContext context) : ControllerBase
 
         return Ok(data);
     }
+
+
+
+
     [HttpGet("Eager/{Laudding}/asSplitQuery")]
     public IActionResult GetEagerSplit()
     {
@@ -107,6 +162,10 @@ public class tryController(AppDbContext context) : ControllerBase
 
         return Ok(data);
     }
+
+
+
+
 
     [HttpGet("Explicit/{Laudding}")]
     public IActionResult GetExplicite()
@@ -122,6 +181,11 @@ public class tryController(AppDbContext context) : ControllerBase
 
     }
 
+
+
+
+
+
     [HttpGet("Explicit/{Laudding}/Refrence-NOCollection")]
     public IActionResult GetExpliciteRefrence()
     {
@@ -134,6 +198,10 @@ public class tryController(AppDbContext context) : ControllerBase
         return Ok(ata);
     }
 
+
+
+
+
     [HttpGet("Lazy-Loading")]
     public IActionResult GetLazyLoading()
     {
@@ -144,6 +212,10 @@ public class tryController(AppDbContext context) : ControllerBase
         //to enable lazy loading
         return Ok(data);
     }
+
+
+
+
 
 
 }
